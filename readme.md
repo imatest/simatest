@@ -219,7 +219,7 @@ Note that this is easy to create from a standard sRGB 8-bit image as follows:
 	imwrite(im,'linear_test_im.png')
 
 
-## Bracket exposure times
+#### Bracket exposure times
 The following will load an image to use as a scene, create a default `CameraModel` to image it, and bracket the exposure times around the auto-exposure-suggested exposure time. This changes the amount of  integrated light falling on the sensor, and thus the exposure. 
 
 The results are shown in a new figure window.
@@ -240,7 +240,7 @@ The results are shown in a new figure window.
 	
 
 
-## Bracket gain while maintaining exposure
+#### Bracket gain while maintaining exposure
 The following brackets the sensor gain (proportional to ISO speed, but defined in terms of DN/electron) while also changing the exposure time to keep the overall "exposure" level constant. Note that this has the practical effect of more effective noise in the image.
 
 	scene = imread('linear_test_im.png'); % Load an image to use as the 'scene'
@@ -259,7 +259,7 @@ The following brackets the sensor gain (proportional to ISO speed, but defined i
 
 
 
-## Simulate raw sensor data
+#### Simulate raw sensor data
 If we want to test measurements from raw sensor data, or a demosaicking algorithm, etc, we can just instantiate a dummy pipeline module so that we get out the raw data from the sensor as is (type `uint16`).
 
 	scene = imread('linear_test_im.png'); % Load an image to use as the 'scene'
@@ -281,7 +281,7 @@ If we want to test measurements from raw sensor data, or a demosaicking algorith
 
 
 
-## Simulating only LCA on a real image
+#### Simulating only LCA on a real image
 Sometimes we just want to simulate a degradation effect on a real image. For example, for studying subjective image quality loss due to LCA according to user ratings, we would want to apply controlled, known amounts of LCA to real images. This can be done by appropriately setting the parameters of the `LensModel` and using dummy components for the sensor and pipeline.
 
 	scene = imread('real_world_im.jpg'); % Load a non-simulated, sRGB image as the 'scene'
