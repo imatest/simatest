@@ -48,6 +48,14 @@ classdef LensModel
    % 
    % See the IEEE-1858 CPIQ specification for more description of the LCA model.
    %
+   % - - Optical Center Offset - - 
+   % Both LCA and Geometric Distortion are radial in nature. The center of this distortion is the
+   % 'optical center' of the lens, which by default is the same as the center of the array of the
+   % scene data put in. However, you can specifyan amount, in real values in units of pixels, an 
+   % offset from the center of the image array where the optical center actually falls. 
+   %
+   % Values are in "image coordinate" orientation, and so positive values, [dx, dy], indicate an
+   % optical center which is towards the lower left of the image by the indicated amounts.
    %
    % - - Flare - - 
    % The flare model assumes that some portion of the light from each pixel gets spread evenly
@@ -71,6 +79,7 @@ classdef LensModel
       lcaCoeffs_rg    % polynomial coeffs for forward application of relative red-green radial aber.
       lcaCoeffs_bg   % polynomial coeffs for forward application of relative blue-green radial aber.
       flareConstant = 0;  % relative to the max of the scene, e.g. 1/1000
+      opticalCenterOffset = [0,0]; % [dx,dy] offset from center of image array (real valued)
    end
    
    
@@ -84,6 +93,8 @@ classdef LensModel
          %  'distortionCoeffs', polynomial coefficient vector, 3rd or 5th order
          %  'lcaCoeffs_rg', polynomial coefficient vector, 3rd or 5th order
          %  'lcaCoeffs_bg', polynomial coefficient vector, 3rd or 5th order
+         %  'opticalCenterOffset', [dx, dy] array of real values
+         %  'flareConstant', a real value in range [0,1]
          %
          % Default LensModel (or any subset of missing optional input parameters) results in a model
          % which has no distortion, no LCA, and no flare.
@@ -92,6 +103,7 @@ classdef LensModel
          default_distortionCoeffs = [0 0 1 0]; % 3rd order polynomial identity function
          default_lcaCoeffs_rg = [0 0 0 0]; % nuthin'
          default_lcaCoeffs_bg = [0 0 0 0]; % nuthin'
+         default_offset = [0,0];
          default_flareConstant = 0;
          
          parser = inputParser();
@@ -99,6 +111,7 @@ classdef LensModel
          parser.addParameter('lcaCoeffs_rg',default_lcaCoeffs_rg)
          parser.addParameter('lcaCoeffs_bg',default_lcaCoeffs_bg)
          parser.addParameter('flareConstant',default_flareConstant)
+         parser.addParameter('offset', default_offset)
          parser.parse(varargin{:});
          params = parser.Results;
          
@@ -106,6 +119,7 @@ classdef LensModel
          obj.lcaCoeffs_bg = params.lcaCoeffs_bg;
          obj.lcaCoeffs_rg = params.lcaCoeffs_rg;
          obj.flareConstant = params.flareConstant;
+         obj.opticalCenterOffset = params.offset;
       end
       
       
@@ -131,16 +145,15 @@ classdef LensModel
          height = size(sceneRadiantPower, 1);
          
          % Produce a mesh grid of the coordinates of each pixel, relative to the exact center of the image
-         xs = ((1:width) - (width+1)/2);
-         ys = ((1:height) - (height+1)/2);
+         xs = (1:width) - ((width+1)/2 + obj.opticalCenterOffset(1));
+         ys = (1:height) - ((height+1)/2 + obj.opticalCenterOffset(2));
          [X, Y] = meshgrid(xs,ys);
+         normFactor = sqrt(((width+1)/2)^2 + ((height+1)/2)^2); % to normalize center-corner distance to 1
          
          % Convert cartesian coordinates of each pixel location to polar
          [THETA, RHO_u] = cart2pol(X, Y);
-         normFactor = RHO_u(1, 1); % to normalize corners to 1
          scaleFactor = polyval(distortionInverseCoeffs, 1); % to keep the corners pinned to the corners
          RHO_u = RHO_u/normFactor*scaleFactor;
-         
          
          % Make a new radial component for each color channel. They all share the same overall
          % distortion, and then the red and blue channels are aberrated relative to the green.

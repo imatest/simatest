@@ -119,6 +119,9 @@ r\_red = f(r\_green)
 or
 r\_blue = f(r\_green)
 
+#### Optical Center offset
+Radial optical effects emanate from the optical center of the lens system. This is assumed to be the exact center of the data array of the scene data (which is a between-pixel location on even-sized dimensions) unless the user sets the `.opticalCenterOffset` property with a real 2-vector `[dx, dy]`. These values indicate the number of pixels of displacement there is between the image center and optical center, and affects things like Radial Distortion and LCA. The values are in the 'image coordinate' orientation and thus positive values will move the optical center *down* and to the *right* in the image.
+
 
 #### Lens Flare
 We model lens flare as a global effect in Simatest. That means that some fraction of the light power coming in from each location is spread around to the entire image, effectively raising the floor level from 0 and reducing contrast. 
