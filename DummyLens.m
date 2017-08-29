@@ -23,7 +23,7 @@ classdef DummyLens < LensModel
       function processedIm = simulate(~,scene)
          % processedIm = dummy.simulate(scene)    
 
-         processedIm = scene;
+         processedIm = double(scene); % needs to return real values, as per superclass' contract
       end
       
    end

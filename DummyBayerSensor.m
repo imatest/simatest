@@ -28,13 +28,14 @@ classdef DummyBayerSensor < SensorModel
       end
       
       
-      function dn = expose(~,radiantPower,~)
+      function dn = expose(obj,radiantPower,~)
          % dn = dummy.expose(radiantPower)
+         % dn = dummy.expose(radiantPower,t)
          %
          % Also accepts a second 't' argument to be consistent with other SensorModels, but simply
          % ignores it.
          
-         dn = uint16(mosaic(radiantPower,obj.bayerPhase));
+         dn = uint16(obj.mosaic(radiantPower));
       end
    end
    

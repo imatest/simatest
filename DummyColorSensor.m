@@ -35,6 +35,7 @@ classdef DummyColorSensor < SensorModel
       % Override the exposre() method to accomplish the simulation bypass.
       function dn = expose(~,radiantPower,~)
          % dn = dummy.expose(radiantPower)
+         % dn = dummy.expose(radiantPower,t)
          %
          % Also accepts a second 't' argument to be consistent with other SensorModels, but simply
          % ignores it.

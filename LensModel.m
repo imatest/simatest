@@ -131,8 +131,8 @@ classdef LensModel
          %                    (photons/sec) in 3 color bands striking the front glass of the lens 
          %
          % - - Output - -
-         % sensorPlaneRadiantPower : MxNx3 array of radiant power values after being affected by
-         %                           lens and being received at the sensor plane
+         % sensorPlaneRadiantPower : MxNx3 array of doubles, the radiant power values after being 
+         %                           affected by lens and being received at the sensor plane
          
          
          % Unpack properties to local variables in correct form, which transforms radial distances 
